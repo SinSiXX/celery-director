@@ -89,15 +89,14 @@ const store = new Vuex.Store({
 
       for (let i = 0; i < tasks.length; i++) {
         var className = tasks[i].status;
-        var html = "<div>";
+        var html = "<div class=pointer>";
             html += "<span class=status></span>";
             html += "<span class=name>"+tasks[i].key+"</span>";
             html += "<br>"
-            html += "<span class=details>12 seconds</span>";
+            html += "<span class=details>"+tasks[i].id+"</span>";
             html += "</div>";
 
         var color = COLORS[tasks[i].status]["background"];
-        //g.setNode(tasks[i].id, { label: tasks[i].key, style: "stroke: #333; fill: " + color, labelStyle: "fill: #ffffff;" });
         g.setNode(tasks[i].id, {
           labelType: "html",
           label: html,
@@ -105,10 +104,10 @@ const store = new Vuex.Store({
           ry: 3,
           padding: 0,
           class: className
-      });
+        });
 
         for (let j=0; j<tasks[i].previous.length; j++) {
-          g.setEdge(tasks[i].id, tasks[i].previous[j],   {});
+          g.setEdge(tasks[i].previous[j], tasks[i].id, {});
         }
         
       }
@@ -122,11 +121,12 @@ const store = new Vuex.Store({
 
       var svg = d3.select("svg"),
           inner = svg.select("g");
-
+      
       // Set up zoom support
       var zoom = d3.zoom().on("zoom", function() {
             inner.attr("transform", d3.event.transform);
           });
+      inner.call(zoom.transform, d3.zoomIdentity);
       svg.call(zoom);
 
       // Create the renderer
@@ -136,9 +136,13 @@ const store = new Vuex.Store({
       render(inner, g);
 
       // Center the graph
-      var initialScale = 0.75;
+      var initialScale = 1.0;
       svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g.graph().width * initialScale) / 2, 20).scale(initialScale));
 
+      var nodes = inner.selectAll("g.node");
+      nodes.on('click', function (task_id) {
+        state.selectedTask = tasks.find(c => c.id == task_id);
+      });
     },
     changeLoadingState(state, loading) {
     	state.loading = loading
@@ -184,13 +188,9 @@ new Vue({
       relaunchDialog: false,
       search: '',
       headers: [
-        {
-          text: 'Name',
-          align: 'left',
-          value: 'fullname',
-        },
-        { text: 'Date', value: 'created' },
-        { text: 'Status', value: 'status' },
+        { text: 'Name', align: 'left', value: 'fullname',},
+        { text: 'Date', align: 'left', value: 'created' },
+        { text: '', value: 'status', sortable: false },
       ],
     }),
     methods: {

@@ -21,10 +21,6 @@
     cursor: pointer;
 }
 
-.node rect {
-fill: #000;
-}
-
 .graph .details  {
     font-weight: 300;
     font-size: 14px;
@@ -48,6 +44,14 @@ margin-right: 8px;
 
 .graph .success .status {
 background-color: #4caf50;
+}
+
+.graph .error .status {
+background-color: #f44336;
+}
+
+.graph .pending .status {
+background-color: #787777;
 }
 
 .graph .name {
