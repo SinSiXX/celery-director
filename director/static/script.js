@@ -137,7 +137,8 @@ const store = new Vuex.Store({
 
       // Center the graph
       var initialScale = 1.0;
-      svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g.graph().width * initialScale) / 2, 20).scale(initialScale));
+      //console.log(svg.attr("width"))
+      //svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g.graph().width * initialScale) / 2, 20).scale(initialScale));
 
       var nodes = inner.selectAll("g.node");
       nodes.on('click', function (task_id) {
